@@ -224,7 +224,8 @@ for web in web_distrito:
     
 ##  Total de Departamentos
 num = sum(i["numero_inmuebles"] for i in num_dep)
-print(f"Total de {inmueble} en {operacion} son: {num}")
+
+print(f"\nTotal de {inmueble} en {operacion} en {zona} son: {num}")
 
 ################################
 
