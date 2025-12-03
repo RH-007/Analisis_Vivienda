@@ -19,7 +19,7 @@ print("\nSeleccione las opciones para la extracción de datos de Vivienda:\n")
 
 # Preguntar portal
 while True:
-    portal_numero = input("Seleccione portal (1=A Donde Vivir, 2=Urbania): ")
+    portal_numero = input("Seleccione portal (1 = A Donde Vivir, 2 = Urbania): ")
 
     if portal_numero == "1":
         portal = "adondevivir"
@@ -34,7 +34,7 @@ while True:
 
 # Preguntar tipo de operación
 while True:
-    operacion_num = input("Seleccione operación (1=Venta, 2=Alquiler): ")
+    operacion_num = input("Seleccione operación (1 = Venta, 2 = Alquiler): ")
 
     if operacion_num == "1":
         operacion = "venta"
@@ -49,7 +49,7 @@ while True:
 
 # Preguntar tipo de inmueble
 while True:
-    inmueble_num = input("Seleccione el tipo de inmueble (1=Departamento, 2=Casa, 3=Terrenos, 4=Local Comercial): ")
+    inmueble_num = input("Seleccione el tipo de inmueble (1 = Departamento, 2 = Casa, 3 = Terrenos, 4 = Local Comercial): ")
 
     if inmueble_num == "1":
         inmueble = "departamentos"
@@ -70,18 +70,8 @@ while True:
     else:
         print("✖ Opción no válida. Intente nuevamente.")
         
-## Preguntar tipo de Lima Metropolitan        
-# zonas_lima = {
-#     'Lima Top': ['Miraflores', 'San Isidro', 'La Molina', 'Santiago de Surco', 'San Borja', 'Barranco'],
-#     'Lima Moderna': ['Jesús María', 'Lince', 'Magdalena', 'San Miguel', 'Pueblo Libre', 'Surquillo'],
-#     'Lima Centro': ['Lima Cercado', 'Breña', 'La Victoria', 'Rímac', 'San Luis'],
-#     'Lima Este': ['Ate Vitarte', 'Cieneguilla', 'Chaclacayo', 'Chosica Lurigancho', 'Santa Anita', 'El Agustino', 'San Juan de Lurigancho'],
-#     'Lima Norte': ['Carabayllo', 'Comas', 'Independencia', 'Los Olivos', 'Puente Piedra', 'San Martín de Porres', 'Ancón', 'Santa Rosa'],
-#     'Lima Sur': ['Chorrillos', 'Lurín', 'Pachacámac', 'San Juan de Miraflores', 'Villa El Salvador', 'Villa María del Triunfo', 'Pucusana', 'Punta Hermosa', 'Punta Negra', 'San Bartolo', 'Santa María del Mar']
-# }
-
 while True:
-    lima_num = input("Seleccione Zona Lima (1 = Lima Top, 2 = Lima Moderna, 3 = Lima Centro, 4 = Lima Este, 5 = Lima Norte, 6 = Lima Sur ")
+    lima_num = input("Seleccione Zona Lima (1 = Top, 2 = Moderna, 3 = Centro, 4 = Este, 5 = Norte, 6 = Sur): ")
 
     if lima_num == "1":
         zona = "Lima Top"
@@ -114,29 +104,12 @@ while True:
 hoy = dt.date.today()
 
 # Resultado final
-print("\n" + "="*50 + "\n")
-print("Inicio de Proceso de Extracción de Datos - Vivienda\n")
-print(f"\n👉 Portal seleccionado: {portal}, Operación: {operacion}, Inmueble: {inmueble} y Zona: {zona}, fecha solicitud: {hoy}")
+print("\nInicio de Proceso de Extracción de Datos - Vivienda\n")
+print(f"\nPortal seleccionado: {portal}, Operación: {operacion}, Inmueble: {inmueble} y Zona: {zona}, fecha solicitud: {hoy}")
 print("\nPresione Enter para iniciar el proceso de extracción de datos...")
 input()
 
 ### Distritos de Lima
-
-distritos = [
-    "Ancon", "Ate Vitarte",
-    "Barranco", "Brena", "Carabayllo", "Chaclacayo", "Chorrillos",
-    "Cieneguilla", "Comas", "El Agustino", "Independencia", "Jesus Maria",
-    "La Molina", "La Victoria", "Lima Cercado", "Lince", "Los Olivos", "Chosica Lurigancho", "Lurin",
-    "Magdalena", "Miraflores", "Pachacamac", "Pucusana", "Pueblo Libre",
-    "Puente Piedra", "Punta Hermosa", "Punta Negra", "Rimac", "San Bartolo",
-    "San Borja", "San Isidro", "San Juan de Lurigancho", "San Juan de Miraflores",
-    "San Luis", "San Martin de Porres", "San Miguel", "Santa Anita", "Santa Maria del Mar", "Santa Rosa",
-    "Santiago de Surco", "Surquillo", "Villa El Salvador", "Villa Maria del Triunfo"
-    # distritos callao
-    "Callao", "Bellavista", "Carmen de la Legua Reynoso", "La Perla", "La Punta", 
-    "Ventanilla", "Mi Peru"
-]
-
 zonas_lima = {
     'Lima Top': ['Miraflores', 'San Isidro', 'La Molina', 'Santiago de Surco', 'San Borja', 'Barranco'],
     'Lima Moderna': ['Jesus Maria', 'Lince', 'Magdalena', 'San Miguel', 'Pueblo Libre', 'Surquillo'],
@@ -433,13 +406,14 @@ print(f"Porcentaje decargado: {round(len(data_final)/num*100, 2)} %")
 
 print("\nGuardando Data Final...\n")
 
-ruta_salida_csv = rf".\data\raw\data_{operacion}_{inmueble}_{portal}_{zona}.csv"
-ruta_salida_json = rf".\data\raw\data_{operacion}_{inmueble}_{portal}_{zona}.json"
+carpeta = rf"C:\Users\PC\Desktop\Proyectos\Proyectos_Py\1.Analisis Vivienda\Analisis_Vivienda\data\raw"
+ruta_csv = rf"{carpeta}\data_{operacion}_{inmueble}_{portal}_{zona}.csv"
+ruta_json = rf"{carpeta}\data_{operacion}_{inmueble}_{portal}_{zona}.json"
 
 
-with open(ruta_salida_json, "w", encoding="utf-8") as f:
+with open(ruta_json, "w", encoding="utf-8") as f:
     json.dump(data_final, f, indent=4, ensure_ascii=False, default=str)
     
 data_final_df = pd.DataFrame(data_final)
-data_final_df.to_csv(ruta_salida_csv, sep = "|",index=False)
+data_final_df.to_csv(ruta_csv, sep = "|",index=False)
 
