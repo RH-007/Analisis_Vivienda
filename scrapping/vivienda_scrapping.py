@@ -11,12 +11,11 @@ from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
 from tqdm import tqdm  # pip install tqdm
 import datetime as dt
+import json
 
-## Request
-import requests
-from ubigeos_peru import Ubigeo as ubg
+## Inputs
 
-## Inputs. 
+print("\nSeleccione las opciones para la extracción de datos de Vivienda:\n")
 
 # Preguntar portal
 while True:
@@ -433,11 +432,8 @@ print(f"Porcentaje decargado: {round(len(data_final)/num*100, 2)} %")
 
 print("\nGuardando Data Final...\n")
 
-ruta_salida_csv = rf"C:\Users\PC\Desktop\Proyectos\Proyectos_Py\6.Analisis_Alquiler_Venta\data\data_{operacion}_{inmueble}_{portal}_{zona}.csv"
-
-import json
-
-ruta_salida_json = rf"C:\Users\PC\Desktop\Proyectos\Proyectos_Py\6.Analisis_Alquiler_Venta\data\data_{operacion}_{inmueble}_{portal}_{zona}.json"
+ruta_salida_csv = rf".\data\raw\data_{operacion}_{inmueble}_{portal}_{zona}.csv"
+ruta_salida_json = rf".\data\raw\data_{operacion}_{inmueble}_{portal}_{zona}.json"
 
 
 with open(ruta_salida_json, "w", encoding="utf-8") as f:
@@ -446,114 +442,3 @@ with open(ruta_salida_json, "w", encoding="utf-8") as f:
 data_final_df = pd.DataFrame(data_final)
 data_final_df.to_csv(ruta_salida_csv, sep = "|",index=False)
 
-
-# ##############################
-
-
-# print("\nInicio de Proceso - por Anuncio Individual")
-
-# enlace_anuncio = [{"enlace_casa": vivienda_i["enlace"]
-#                 , "direccion": vivienda_i["direccion"]
-#                 , "fuente": vivienda_i["fuente"]
-#                 , "inmueble": vivienda_i["inmueble"]} for vivienda_i in data_final]
-
-
-# from selenium import webdriver
-# from selenium.webdriver.common.by import By
-# from selenium.webdriver.support.ui import WebDriverWait
-# from selenium.webdriver.support import expected_conditions as EC
-# from selenium.webdriver.chrome.service import Service as ChromeService
-# from webdriver_manager.chrome import ChromeDriverManager
-# import time
-
-# def scrape_detalle(url, fuente, inmueble, direccion, fecha):
-
-#     options = webdriver.ChromeOptions()
-#     options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
-
-#     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
-#     wait = WebDriverWait(driver, 5)
-
-#     driver.get(url)
-#     time.sleep(2)  # breve espera de seguridad
-
-#     # --------------------- DESCRIPCIÓN ---------------------
-#     try:
-#         descripcion_element = wait.until(
-#             EC.presence_of_element_located((
-#                 By.XPATH,
-#                 "//div[contains(@class, 'wrapper-description') or contains(@class, 'description')]"
-#             ))
-#         )
-#         descripcion = descripcion_element.text.strip()
-#     except:
-#         descripcion = "N/A"
-
-#     # --------------------- CARACTERÍSTICAS ---------------------
-#     try:
-#         caracteristicas_element = wait.until(
-#             EC.presence_of_element_located((
-#                 By.XPATH,
-#                 "//div[contains(@class, 'generalFeaturesProperty') or contains(@class, 'general-features')]"
-#             ))
-#         )
-#         caracteristicas = caracteristicas_element.text.strip()
-#     except:
-#         caracteristicas = "N/A"
-
-#     # --------------------- UBICACIÓN / ANUNCIANTE ---------------------
-#     try:
-#         anunciante_element = wait.until(
-#             EC.presence_of_element_located((
-#                 By.XPATH,
-#                 "//section[contains(@class, 'section-location-property')]"
-#             ))
-#         )
-#         anunciante = anunciante_element.text.strip()
-#     except:
-#         anunciante = "N/A"
-
-#     # --------------------- MAPA ---------------------
-#     try:
-#         map_element = driver.find_element(By.ID, "static-map")
-#         imagen = map_element.get_attribute("src")
-#     except:
-#         imagen = "N/A"
-
-#     driver.quit()
-
-#     # --------------------- RETORNO ESTRUCTURADO ---------------------
-#     return {
-#         "fuente": fuente,
-#         "inmueble": inmueble,
-#         "direccion": direccion,
-#         "descripcion": descripcion,
-#         "caracteristicas": caracteristicas,
-#         "anunciante": anunciante,
-#         "imagen": imagen,
-#         "enlace": url,
-#         "fecha": fecha
-#     }
-
-# viviendas_detalle = []
-
-# for enlace_i in tqdm(enlace_anuncio, desc="Procesando Anuncios", unit="anuncio"):
-    
-#     detalle = scrape_detalle(
-#         url=enlace_i["enlace_casa"],
-#         fuente=enlace_i["fuente"],
-#         inmueble=enlace_i["inmueble"],
-#         direccion=enlace_i["direccion"],
-#         fecha=hoy
-#     )
-
-#     viviendas_detalle.append(detalle)
-    
-#     driver.quit()
-
-# print(f"\nSe extrajeron informacion de {len(viviendas_detalle)} unidades\n")
-
-# # Guardar archivo
-# with open(f"data_{operacion}_{inmueble}_{portal}_{zona}_detalle.json", "w", encoding="utf-8") as f:
-#     json.dump(viviendas_detalle, f, indent=4, ensure_ascii=False, default=str)
-    
