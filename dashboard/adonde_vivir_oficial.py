@@ -14,10 +14,10 @@ from urllib.parse import quote
 import plotly.express as px
 
 
-st.set_page_config(layout="wide")
 ## Titulo
+
 st.set_page_config(layout="wide")
-st.title("Análisis Inmobiliario 🏡📊")
+st.title("Análisis Inmobiliario en Lima - Alquiler y Venta")
 
 """
 Bienvenido a la plataforma interactiva de análisis inmobiliario de Lima.  
@@ -26,8 +26,8 @@ Aquí podrás explorar **departamentos, casas y terrenos** en venta y alquiler, 
 Esta es una herramienta diseñada para ayudarte a entender **cómo se mueve el mercado inmobiliario en Lima**, detectar oportunidades y tomar mejores decisiones.  
 
 Las fuentes que se usaron para recopilar esta información al 19 de agosto de 2025 fueron: 
-- 🏡 [Urbania](https://urbania.pe)
-- 🏠 [Adondevivir](https://www.adondevivir.com)
+- [Urbania](https://urbania.pe)
+- [Adondevivir](https://www.adondevivir.com)
 
 La aplicación te permite:
 
@@ -103,12 +103,12 @@ def load_data(path):
     ## Estacionamiento
     df["estacionamiento_gp"] = df["estacionamientos"].apply(lambda x: "Si" if x > 0 else "No")
     
-    
 
     return df
 
 # Cargamos los datos usando nuestra función cacheada
-data = load_data("./data/data_alquiler_venta.csv")
+ruta = rf"C:\Users\PC\Desktop\Proyectos\Proyectos_Py\1.Analisis Vivienda\Analisis_Vivienda\data\processed\data_dondevivir_analisis.csv"
+data = load_data(ruta)
 
 ## Variables
 distritos = data["distrito_oficial"].unique()
