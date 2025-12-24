@@ -14,7 +14,6 @@ import datetime as dt
 import json
 
 ## Inputs
-
 print("\nSeleccione las opciones para la extracción de datos de Vivienda:\n")
 
 # Preguntar portal
@@ -344,7 +343,6 @@ for pagina in tqdm(paginas, desc="Procesando Distritos", unit="distrito"):
             banio_.append(banio)
             est_.append(est)
 
-
         ## Detalle
         detalle = anuncio.find_elements(By.CLASS_NAME, "postingCard-module__posting-description")
         detalle_ = []
@@ -395,7 +393,6 @@ for pagina in tqdm(paginas, desc="Procesando Distritos", unit="distrito"):
     
     data_final.extend(data_vivienda)
     
-
 print("\nValidacion de Datos Descargados:\n")
 num = sum(i["numero_inmuebles"] for i in num_dep)
 print(f"Total de {inmueble} en {operacion} esperado: {num}")
@@ -403,17 +400,14 @@ print(f"Total de {inmueble} en {operacion} decargado: {len(data_final)}")
 print(f"Porcentaje decargado: {round(len(data_final)/num*100, 2)} %")
 
 ## Guardando Data Final
-
 print("\nGuardando Data Final...\n")
 
 carpeta = rf"C:\Users\PC\Desktop\Proyectos\Proyectos_Py\1.Analisis Vivienda\Analisis_Vivienda\data\raw"
 ruta_csv = rf"{carpeta}\data_{operacion}_{inmueble}_{portal}_{zona}.csv"
 ruta_json = rf"{carpeta}\data_{operacion}_{inmueble}_{portal}_{zona}.json"
 
-
 with open(ruta_json, "w", encoding="utf-8") as f:
     json.dump(data_final, f, indent=4, ensure_ascii=False, default=str)
     
 data_final_df = pd.DataFrame(data_final)
 data_final_df.to_csv(ruta_csv, sep = "|",index=False)
-
