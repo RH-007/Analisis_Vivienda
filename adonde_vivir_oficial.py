@@ -7,9 +7,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from pathlib import Path
-from streamlit_folium import st_folium
-import folium
-from folium.plugins import MarkerCluster, MiniMap, Fullscreen, MeasureControl, LocateControl
 from urllib.parse import quote
 import plotly.express as px
 
@@ -61,12 +58,12 @@ def load_data(path):
 
     return df
 
-# Cargamos los datos usando nuestra función cacheada
-# ruta = rf"C:\Users\PC\Desktop\Proyectos\Proyectos_Py\1.Analisis Vivienda\Analisis_Vivienda\data\processed\data_dondevivir_analisis.csv"
-# data = load_data(ruta)
 
 # Cargamos los datos usando nuestra función cacheada
-data = load_data("./data/data_alquiler_venta.csv")
+# ruta = rf"C:\Users\PC\Desktop\Proyectos\Proyectos_Py\1.Analisis Vivienda\Analisis_Vivienda\data\processed\data_dondevivir_analisis.csv"
+
+# Cargamos los datos usando nuestra función cacheada
+data = load_data("/data/data_alquiler_venta.csv")
 
 
 ## Variables
