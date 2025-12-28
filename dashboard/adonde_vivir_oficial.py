@@ -66,7 +66,7 @@ def load_data(path):
 # data = load_data(ruta)
 
 # Cargamos los datos usando nuestra función cacheada
-data = load_data("./data/processed/data_alquiler_venta.csv")
+data = load_data("./data/data_alquiler_venta.csv")
 
 
 ## Variables
