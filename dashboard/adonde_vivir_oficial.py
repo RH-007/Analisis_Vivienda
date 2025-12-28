@@ -31,10 +31,10 @@ Las fuentes que se usaron para recopilar esta información al 19 de agosto de 20
 
 La aplicación te permite:
 
-- 📍 Visualizar la distribución geográfica de las propiedades en los distintos distritos.  
-- 💰 Comparar precios en **soles** (alquiler) y **dólares** (venta), con métricas como precio por m² y variación.  
-- 📐 Filtrar fácilmente por área, dormitorios, baños, estacionamientos y mantenimiento.  
-- 🔗 Acceder directamente al anuncio original de cada propiedad.  
+- Visualizar la distribución de propiedades en los distintos distritos.  
+- Comparar precios en **soles** (alquiler) y **dólares** (venta), con métricas como precio por m² y variación.  
+- Filtrar fácilmente por área, dormitorios, baños, estacionamientos y mantenimiento.  
+- Acceder directamente al anuncio original de cada propiedad.  
 
 """
 
@@ -53,7 +53,7 @@ def load_data(path):
     """
     df = pd.read_csv(path, sep="|", encoding="utf-8")
     
-    subset_cols = ['distrito_oficial', 'direccion']
+    subset_cols = ['distrito', 'direccion']
     
     # Eliminamos los duplicados basándonos en las columnas clave.
     # `inplace=True` modifica el DataFrame directamente.
@@ -66,10 +66,10 @@ ruta = rf"C:\Users\PC\Desktop\Proyectos\Proyectos_Py\1.Analisis Vivienda\Analisi
 data = load_data(ruta)
 
 ## Variables
-distritos = data["distrito_oficial"].unique()
+distritos = data["distrito"].unique()
 inmueble = data["inmueble"].unique()
 operacion = data["operacion"].unique()
-estacionamientos = data["estacionamiento_gp"].unique()
+estacionamientos = data["tiene_estacionamientos"].unique()
 
 
 ## ==================##
@@ -175,65 +175,6 @@ def display_details_table(df: pd.DataFrame, operation: str):
         df_display[existing_cols].sort_values(price_col, ascending=True),
         hide_index=True, use_container_width=True, column_config=config, disabled=True
     )
-    
-# def create_map(df: pd.DataFrame):
-#     """Genera y muestra un mapa de Folium con las propiedades de un DataFrame."""
-    
-#     # Filtra propiedades con geolocalización válida.
-#     status_validos = {'geo', 'ok', 'geocoded', 'found'}
-    
-#     # .loc con una máscara booleana devuelve una copia. Se añade .copy() para ser explícitos.
-#     gdf = df.loc[
-#         df['status'].astype(str).str.lower().isin(status_validos) &
-#         df['lat'].notna() &
-#         df['lon'].notna()
-#     ].copy()
-    
-#     if gdf.empty:
-#         st.info("No hay propiedades con geolocalización válida para graficar.")
-#         return
-
-#     # Centro del mapa
-#     center_lat, center_lon = gdf['lat'].mean(), gdf['lon'].mean()
-#     m = folium.Map(location=[center_lat, center_lon], zoom_start=15, tiles='OpenStreetMap')
-    
-#     MiniMap(toggle_display=True).add_to(m)
-#     Fullscreen(position='topright').add_to(m)
-
-#     # Controles útiles
-#     LocateControl().add_to(m)
-
-#     # Cluster de marcadores
-#     cluster = MarkerCluster(name="Propiedades").add_to(m)
-
-#     # Construye popup/tooltip seguros
-#     def safe(x): 
-#         return "" if pd.isna(x) else str(x)
-
-#     for _, r in gdf.iterrows():
-#         gmaps_q = quote(f"{r.get('direccion', '')}, Lima, Perú")
-#         popup_html = f"""
-#         <b>Dirección:</b> {safe(r.get('direccion_fix') or r.get('direccion'))}<br>
-#         <b>Caracteristicas:</b> {r.get('caracteristica','-')}<br>
-#         <b>Precio PEN:</b> {f"S/ {r.get('precio_pen'):,.0f}" if pd.notna(r.get('precio_pen')) else '-'}<br/>
-#         <b>Precio USD:</b> {f"US$ {r.get('precio_usd'):,.0f}" if pd.notna(r.get('precio_usd')) else '-'}<br/>
-#         <b>Enlace:</b> <a href="{r['enlace']}" target="_blank">Abrir en {r.get('fuente','-')}</a><br>
-#         <a href="https://www.google.com/maps/search/?api=1&query={gmaps_q}" target="_blank">Abrir en Google Maps</a>
-#         """
-        
-#         color = 'blue' if r.get('operacion') == 'alquiler' else 'green'
-
-#         folium.CircleMarker(
-#             location=[r['lat'], r['lon']],
-#             radius=5,
-#             color=color,
-#             fill=True,
-#             fill_opacity=0.8,
-#             tooltip=safe(r.get('direccion_fix') or r.get('direccion')),
-#             popup=folium.Popup(popup_html, max_width=350),
-#         ).add_to(cluster)
-
-#     st_folium(m, height=600, use_container_width=True)
 
 ## ==================##
 ##      Pestañas     ##
@@ -245,7 +186,6 @@ tab1, tab2, tab3 = st.tabs(["Análisis Distrito", "Alquiler", "Venta"])
 ## ===========================##
 ##      Analisis Distrito     ##
 ## ===========================##
-
 
 with tab1:
 
@@ -269,7 +209,7 @@ with tab1:
         # Usamos la nueva columna 'distrito_categoria' para el filtro
         zonas = ['Todos','Lima Top', 'Lima Moderna', 'Lima Centro',  'Lima Este', 'Lima Norte',  'Lima Sur']
         input_zona = st.selectbox(
-            "Zona"
+            "zona"
             , zonas
             , key="f_zona"
             , label_visibility="collapsed"
@@ -291,10 +231,10 @@ with tab1:
         df_filtrado = data[
             (data["inmueble"] == input_inmueble) &
             (data["operacion"] == input_operacion) &
-            (data["distrito_categoria"] == input_zona) # Filtro por la nueva zona
+            (data["zona"] == input_zona) # Filtro por la nueva zona
         ].copy()
 
-    data_agrupada = df_filtrado.groupby("distrito_oficial")
+    data_agrupada = df_filtrado.groupby("distrito")
     data_agrupada_df = data_agrupada[col_precio].agg(
         n="count",
         min="min", max="max",
@@ -316,14 +256,14 @@ with tab1:
         data_agrupada_df_fmt.sort_values("n", ascending=False),
         use_container_width=True,
         column_config={
-            "distrito_oficial": st.column_config.TextColumn("Distrito", disabled=True)
+            "distrito": st.column_config.TextColumn("Distrito", disabled=True)
         },
         disabled=True,
         key="data_agrupada_fmt"
     )
     
     
-    st.subheader("Análisis Gráfico Interactivo", divider="blue")
+    st.subheader(f"Gráficos Interactivos para {input_inmueble} en {input_operacion} en {input_zona}", divider="blue")
 
     if df_filtrado.empty:
         st.warning("No hay datos suficientes para generar gráficos con los filtros seleccionados.")
@@ -332,11 +272,11 @@ with tab1:
         # Este gráfico es ideal para comparar la dispersión de precios entre distritos.
         st.markdown(f"##### Distribución de Precios de {input_inmueble} en {input_operacion}")
         fig1 = px.box(df_filtrado, 
-                    x="distrito_oficial", 
+                    x="distrito", 
                     y=col_precio,
-                    color="distrito_oficial",
+                    color="distrito",
                     points="all",
-                    labels={"distrito_oficial": "Distrito", col_precio: f"Precio ({simbolo})"})
+                    labels={"distrito": "Distrito", col_precio: f"Precio ({simbolo})"})
         fig1.update_layout(showlegend=False)
         st.plotly_chart(fig1, use_container_width=True)
 
@@ -346,17 +286,17 @@ with tab1:
         with g1:
             # Gráfico 2: Número de Propiedades por Distrito (Bar Chart)
             st.markdown("##### Cantidad de Propiedades por Distrito")
-            prop_por_distrito = df_filtrado['distrito_oficial'].value_counts().sort_values(ascending=True) 
+            prop_por_distrito = df_filtrado['distrito'].value_counts().sort_values(ascending=True) 
             prop_por_distrito_df = pd.DataFrame(prop_por_distrito)
             st.bar_chart(prop_por_distrito_df, horizontal=True)
 
         with g2:
             # Gráfico 3: Precio Promedio por m² por Distrito (Bar Chart)
             st.markdown(f"##### Precio Promedio por m² ({simbolo})")
-            df_plot = df_filtrado[(df_filtrado['area'] > 0) & (df_filtrado[col_precio] > 0)].copy()
+            df_plot = df_filtrado[(df_filtrado['area_promedio'] > 0) & (df_filtrado[col_precio] > 0)].copy()
             if not df_plot.empty:
-                df_plot['precio_m2'] = round(df_plot[col_precio] / df_plot['area'],2)
-                precio_m2_distrito = df_plot.groupby('distrito_oficial')['precio_m2'].mean().round(2).sort_values(ascending=False)
+                df_plot['precio_m2'] = round(df_plot[col_precio] / df_plot['area_promedio'],2)
+                precio_m2_distrito = df_plot.groupby('distrito')['precio_m2'].mean().round(2).sort_values(ascending=False)
                 st.bar_chart(precio_m2_distrito, horizontal=True)
             else:
                 st.info("No hay datos de área o precio para calcular el precio por m².")
@@ -364,19 +304,19 @@ with tab1:
         # Gráfico 4: Relación Área vs. Precio (Scatter Plot)
         st.markdown(f"##### Relación Área vs. Precio para {input_inmueble}")
         # Filtrar outliers para una mejor visualización, mostrando el 95% de los datos
-        area_limite = df_filtrado['area'].quantile(0.95)
+        area_limite = df_filtrado['area_promedio'].quantile(0.95)
         precio_limite = df_filtrado[col_precio].quantile(0.95)
         
         df_scatter = df_filtrado[
-            (df_filtrado['area'] > 0) & (df_filtrado[col_precio] > 0) &
-            (df_filtrado['area'] <= area_limite) & 
+            (df_filtrado['area_promedio'] > 0) & (df_filtrado[col_precio] > 0) &
+            (df_filtrado['area_promedio'] <= area_limite) & 
             (df_filtrado[col_precio] <= precio_limite)
         ].copy()
 
         if not df_scatter.empty:
-            fig4 = px.scatter(df_scatter, x="area", y=col_precio, color="distrito_oficial",
+            fig4 = px.scatter(df_scatter, x="area_promedio", y=col_precio, color="distrito",
                             hover_data=['direccion'], title=f"Precio vs. Área (mostrando el 95% de los datos)",
-                            labels={"area": "Área (m²)", col_precio: f"Precio ({simbolo})"})
+                            labels={"area_promedio": "Área (m²)", col_precio: f"Precio ({simbolo})"})
             st.plotly_chart(fig4, use_container_width=True)
     
 ## =================================##
@@ -405,7 +345,7 @@ with tab2:
     ## Filtrado de Alquiler
     df_filtrado_aquiler = data[
         (data["inmueble"] == input_inmueble) &
-        (data["distrito_oficial"] == input_distrito) &
+        (data["distrito"] == input_distrito) &
         (data["operacion"] == "alquiler")
     ].copy()
     
@@ -488,17 +428,6 @@ with tab2:
     # Usamos la función refactorizada para mostrar la tabla
     display_details_table(df_tabla_alquiler, "alquiler")
     
-    ## ==============================##
-    ## Mapa de ALquiler por Distrito ##
-    ## ==============================##
-    
-    # st.subheader(f"Mapa de {input_inmueble} en Alquiler en {input_distrito}", divider="blue")
-    
-    # st.write(f"Cantidad de {input_inmueble} en Alquiler en {input_distrito} en Mapa Disponibles:", df_tabla_alquiler[df_tabla_alquiler["status"]=="geo"].shape[0])
-    
-    # # Usamos la función refactorizada para crear el mapa
-    # create_map(df_filtrado_aquiler)
-    
     
 ## ===============================##
 ## PESTAÑA de Ventas por Distrito ##
@@ -526,7 +455,7 @@ with tab3:
     ## Filtrado de Alquiler
     df_filtrado_venta = data[
         (data["inmueble"] == input_inmueble) &
-        (data["distrito_oficial"] == input_distrito) &
+        (data["distrito"] == input_distrito) &
         (data["operacion"] == "venta")
     ].copy()
     
@@ -606,14 +535,3 @@ with tab3:
     
     # Usamos la función refactorizada para mostrar la tabla
     display_details_table(df_tabla_venta, "venta")
-    
-    # ## ===========================##
-    # ## Mapa de Venta por Distrito ##
-    # ## ===========================##
-    
-    # st.subheader(f"Mapa de {input_inmueble} en Venta en {input_distrito}", divider="blue")
-    
-    # st.write(f"Cantidad de {input_inmueble} en Venta en {input_distrito} en Mapa Disponibles:", df_tabla_venta[df_tabla_venta["status"]=="geo"].shape[0])
-    
-    # # Usamos la función refactorizada para crear el mapa
-    # create_map(df_filtrado_venta)
