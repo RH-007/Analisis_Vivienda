@@ -63,7 +63,7 @@ def load_data(path):
 # ruta = rf"C:\Users\PC\Desktop\Proyectos\Proyectos_Py\1.Analisis Vivienda\Analisis_Vivienda\data\processed\data_dondevivir_analisis.csv"
 
 # Cargamos los datos usando nuestra función cacheada
-data = load_data("./data/data_dondevivir_analisis.csv")
+data = load_data("./data/processed/data_dondevivir_analisis.csv")
 
 
 ## Variables
