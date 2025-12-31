@@ -13,6 +13,7 @@ import plotly.express as px
 
 ## Titulo
 
+st.image("./dashboard/encabezado1.png", use_container_width=True)
 st.set_page_config(layout="wide")
 st.title("Análisis del mercado de Alquiler y Venta en Lima")
 
