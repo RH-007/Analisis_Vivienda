@@ -23,13 +23,12 @@ Aquí podrás explorar **departamentos, casas y terrenos** en venta y alquiler, 
 Esta es una herramienta diseñada para ayudarte a entender **cómo se mueve el mercado inmobiliario en Lima**, detectar oportunidades y tomar mejores decisiones.  
 
 Las principales fuentes fueron: 
-- [Urbania](https://urbania.pe)
-- [Adondevivir](https://www.adondevivir.com)
+- [Urbania](https://urbania.pe) y [Adondevivir](https://www.adondevivir.com)
 
 La aplicación te permite:
 
 - Visualizar la distribución de propiedades en los distintos distritos.  
-- Comparar precios en **soles** (alquiler) y **dólares** (venta), con métricas como precio por m² y variación.  
+- Comparar precios en **soles** (alquiler) y **dólares** (venta), con métricas como precio por m² y variación entre distritos (visualizaciones interactivas incluidas). 
 - Filtrar fácilmente por área, dormitorios, baños, estacionamientos y mantenimiento si fuera el caso. 
 - Acceder directamente al anuncio original de cada propiedad.  
 
@@ -194,7 +193,7 @@ def display_details_table(df: pd.DataFrame, operation: str):
 ##      Pestañas     ##
 ## ==================##
 
-tab1, tab2, tab3 = st.tabs(["Análisis Distrito", "Alquiler", "Venta"])
+tab1, tab2, tab3 = st.tabs(["Análisis Descriptivo Distrito", "Alquiler", "Venta"])
 
 
 ## ===========================##
