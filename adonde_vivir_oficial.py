@@ -193,7 +193,7 @@ def display_details_table(df: pd.DataFrame, operation: str):
 ##      Pestañas     ##
 ## ==================##
 
-tab1, tab2, tab3 = st.tabs(["Análisis Descriptivo Distrito", "Alquiler", "Venta"])
+tab1, tab2, tab3 = st.tabs(["Análisis Descriptivo por Distrito", "Alquiler", "Venta"])
 
 
 ## ===========================##
