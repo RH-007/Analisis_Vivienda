@@ -11,37 +11,10 @@ from urllib.parse import quote
 import plotly.express as px
 
 st.set_page_config(layout="wide")
-st.markdown(
-    """
-    <style>
-    .banner {
-        position: relative;
-        width: 100%;
-    }
-    .banner img {
-        width: 100%;
-        border-radius: 12px;
-    }
-    .banner-text {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: white;
-        font-size: 2.8em;
-        font-weight: bold;
-        text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
-    }
-    </style>
-
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
 ## Titulo
 # st.image(rf"C:\Users\PC\Desktop\Proyectos\Proyectos_Py\1.Analisis Vivienda\Analisis_Vivienda\dashboard\encabezado1.jpg", use_container_width=True)
-st.image(rf"C:/Users/PC/Desktop/Proyectos/Proyectos_Py/1.Analisis Vivienda/Analisis_Vivienda/dashboard/encabezado1.jpg", use_container_width=True)
+ruta_img = rf"dashboard\encabezado1.jpg"
+st.image(ruta_img, use_container_width=True)
 st.title("Análisis del mercado de Alquiler y Venta en Lima")
 
 """
