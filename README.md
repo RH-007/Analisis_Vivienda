@@ -17,7 +17,7 @@ Proyecto profesional de scraping, análisis y visualización de los diferentes t
 
 
 ## 🗺️ Demo del Dashboard
-*(Aquí puedes colocar capturas de pantalla o GIFs)*
+![Dashboard Demo](images/dashboard_demo.gif)
 
 ---
 

@@ -7,9 +7,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from pathlib import Path
-from streamlit_folium import st_folium
-import folium
-from folium.plugins import MarkerCluster, MiniMap, Fullscreen, MeasureControl, LocateControl
 from urllib.parse import quote
 import plotly.express as px
 
@@ -17,7 +14,7 @@ import plotly.express as px
 ## Titulo
 
 st.set_page_config(layout="wide")
-st.title("Análisis Inmobiliario en Lima - Alquiler y Venta")
+st.title("Análisis del mercado de Alquiler y Venta en Lima")
 
 """
 Bienvenido a la plataforma interactiva de análisis inmobiliario de Lima.  
@@ -25,7 +22,7 @@ Bienvenido a la plataforma interactiva de análisis inmobiliario de Lima.
 Aquí podrás explorar **departamentos, casas y terrenos** en venta y alquiler, con datos reales y actualizados. 
 Esta es una herramienta diseñada para ayudarte a entender **cómo se mueve el mercado inmobiliario en Lima**, detectar oportunidades y tomar mejores decisiones.  
 
-Las fuentes que se usaron para recopilar esta información al 19 de agosto de 2025 fueron: 
+Las principales fuentes fueron: 
 - [Urbania](https://urbania.pe)
 - [Adondevivir](https://www.adondevivir.com)
 
@@ -33,7 +30,7 @@ La aplicación te permite:
 
 - Visualizar la distribución de propiedades en los distintos distritos.  
 - Comparar precios en **soles** (alquiler) y **dólares** (venta), con métricas como precio por m² y variación.  
-- Filtrar fácilmente por área, dormitorios, baños, estacionamientos y mantenimiento.  
+- Filtrar fácilmente por área, dormitorios, baños, estacionamientos y mantenimiento si fuera el caso. 
 - Acceder directamente al anuncio original de cada propiedad.  
 
 """
@@ -61,12 +58,11 @@ def load_data(path):
 
     return df
 
-# Cargamos los datos usando nuestra función cacheada
-ruta = rf"C:\Users\PC\Desktop\Proyectos\Proyectos_Py\1.Analisis Vivienda\Analisis_Vivienda\data\processed\data_dondevivir_analisis.csv"
-data = load_data(ruta)
 
 # Cargamos los datos usando nuestra función cacheada
-# data = load_data("./data/data_alquiler_venta.csv")
+
+# Cargamos los datos usando nuestra función cacheada
+data = load_data("./data/processed/data_dondevivir_analisis.csv")
 
 
 ## Variables
@@ -125,19 +121,19 @@ def display_kpis(df: pd.DataFrame, operation: str, distrito: str, inmueble: str)
     
     c1, c2, c3 = st.columns(3)
     with c1: st.metric(f"🚪 Total {inmueble}", len(df_kpi))
-    with c2: st.metric("📉 Mínimo", fmt(df_kpi[price_col].min()))
-    with c3: st.metric("📈 Máximo", fmt(df_kpi[price_col].max()))
+    with c2: st.metric("Mínimo", fmt(df_kpi[price_col].min()))
+    with c3: st.metric("Máximo", fmt(df_kpi[price_col].max()))
     
     c4, c5 = st.columns(2)
     with c4: 
         st.metric(
-            label="📊 Promedio", 
+            label="Promedio", 
             value=fmt(district_avg), 
             delta=f"{delta_avg:,.0f} vs. promedio general",
         )
     with c5: 
         st.metric(
-            label="📊 Mediana", 
+            label="Mediana", 
             value=fmt(district_md), 
             delta=f"{delta_md:,.0f} vs. mediana general",
         )
@@ -146,6 +142,14 @@ def display_details_table(df: pd.DataFrame, operation: str):
     """Muestra la tabla de detalles de propiedades para una operación específica."""
     
     df_display = df.copy()
+    
+    df_display["detalle"] = df_display["detalle"].fillna("")
+    df_display["caracteristica"] = df_display["caracteristica"].fillna("")
+
+    # Truncar texto visible
+    df_display["detalle_short"] = (
+        df_display["detalle"].str.slice(0, 35) + "..."
+    )
 
     # Configuración base común para ambas operaciones
     config = {
@@ -156,19 +160,25 @@ def display_details_table(df: pd.DataFrame, operation: str):
         "banios": st.column_config.NumberColumn("Baños", width="small", disabled=True),
         "estacionamientos": st.column_config.NumberColumn("Estac.", width="small", disabled=True),
         "caracteristica": st.column_config.TextColumn("Características", disabled=True),
-        "enlace": st.column_config.LinkColumn("Anuncio", display_text="🔗 Abrir", validate=r"^https?://.*$"),
+        "detalle": st.column_config.TextColumn("Detalle", disabled=True),
+        "enlace": st.column_config.LinkColumn("Anuncio", display_text= "Abrir", validate=r"^https?://.*$"),
     }
 
     if operation == "alquiler":
         price_col = "precio_pen"
-        cols_to_show = ["enlace", "fuente", "direccion", "precio_pen", "area", "dormitorio", "banios", "estacionamientos", "mantenimiento", "caracteristica"]
+        cols_to_show = ["enlace", "fuente", "direccion", "precio_pen", "area", "dormitorio", "banios", "estacionamientos", "mantenimiento", "caracteristica", "detalle"]
         config.update({
             "precio_pen": st.column_config.NumberColumn("Precio (S/.)", format="S/. %d", disabled=True),
             "mantenimiento": st.column_config.NumberColumn("Mant. (S/.)", format="S/. %d", disabled=True),
+            "detalle_short": st.column_config.TextColumn(
+        "Detalle",
+        help="Pasa el mouse para ver el detalle completo",
+        disabled=True
+    )
         })
     else:  # venta
         price_col = "precio_usd"
-        cols_to_show = ["enlace", "fuente", "direccion", "precio_usd", "area", "dormitorio", "banios", "estacionamientos", "caracteristica"]
+        cols_to_show = ["enlace", "fuente", "direccion", "precio_usd", "area", "dormitorio", "banios", "estacionamientos", "caracteristica", "detalle"]
         config.update({
             "precio_usd": st.column_config.NumberColumn("Precio ($)", format="$ %d", disabled=True),
         })
@@ -341,8 +351,9 @@ with tab2:
         )
     with c2:
         st.markdown("**Inmueble**")
+        inmueble_alquiler_ = ["departamentos"]
         input_inmueble = st.selectbox(
-            "Inmueble", inmueble, key="alquiler_inmueble" ,
+            "Inmueble", inmueble_alquiler_, key="alquiler_inmueble" ,
             label_visibility="collapsed"
         )
     
@@ -390,7 +401,7 @@ with tab2:
         
     with d3:
         st.markdown("**Dormitorios**")       
-        labels_dorm = ["Todos", 1, 2, 3, 4, 5, 6]
+        labels_dorm = ["Todos", "1 Dormitorio", "2 Dormitorios", "3 Dormitorios", "4 Dormitorios", "5 o más Dormitorios"]
         input_dormitorio_alquiler = st.selectbox(
             "seleccione el número de dormitorios:"
             , options=labels_dorm
@@ -423,7 +434,7 @@ with tab2:
     
     # Se aplica el filtro de numero de habitaciones si no es "Todos".
     if input_dormitorio_alquiler != "Todos":
-        df_tabla_alquiler = df_tabla_alquiler[df_tabla_alquiler["dormitorio"] == input_dormitorio_alquiler]
+        df_tabla_alquiler = df_tabla_alquiler[df_tabla_alquiler["dormitorios"] == input_dormitorio_alquiler]
         
     # Se aplica el filtro de estacionamientos si no es "Todos".
     if input_estacionamiento_alquiler != "Todos":
@@ -450,8 +461,9 @@ with tab3:
         )
     with c2:
         st.markdown("**Inmueble**")
+        inmueble_venta_ = ["departamentos", "casas"]
         input_inmueble = st.selectbox(
-            "Inmueble", inmueble, key="venta_inmueble"  ,     # <- clave única
+            "Inmueble", inmueble_venta_, key="venta_inmueble"  ,     # <- clave única
             label_visibility="collapsed"
         )
 
@@ -498,7 +510,7 @@ with tab3:
         
     with e3:
         st.markdown("**Dormitorios**")       
-        labels_dorm = ["Todos", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+        labels_dorm = ["Todos", "1 Dormitorio", "2 Dormitorios", "3 Dormitorios", "4 Dormitorios", "5 o más Dormitorios"]
         input_dormitorio_venta = st.selectbox(
             "seleccione el número de dormitorios:"
             , options=labels_dorm
@@ -531,7 +543,7 @@ with tab3:
         
     # Se aplica el filtro de numero de habitaciones si no es "Todos".
     if input_dormitorio_venta != "Todos":
-        df_tabla_venta = df_tabla_venta[df_tabla_venta["dormitorio"] == input_dormitorio_venta]
+        df_tabla_venta = df_tabla_venta[df_tabla_venta["dormitorios"] == input_dormitorio_venta]
         
     # Se aplica el filtro de estacionamientos si no es "Todos".
     if input_estacionamiento_venta != "Todos":
