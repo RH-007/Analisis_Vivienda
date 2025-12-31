@@ -30,18 +30,23 @@ Proyecto profesional de scraping, análisis y visualización de los diferentes t
 👉 **Aplicación en producción:**  
 https://vivienda.streamlit.app/
 
-
-
+Primer vistazo a la seccion de análisis descriptivo y comparativo por distrito. A cotinuación, una breve demostración del dashboard interactivo:
 ![Análisis Descriptivo](dashboard/vivienda1.gif)
 
+Ventana de filtros dinámicos para explorar las diferentes opciones de alquiler y venta de inmuebles en Lima Metropolitana:
 ![Alquiler - Venta](dashboard/vivienda2.gif)
 
 
+Si quuieres probar el dashboard localmente, sigue estos pasos:
+
+```bash
+pip install -r requirements.txt
 
 git clone https://github.com/tu_usuario/Analisis_Vivienda.git
-cd Analisis_Vivienda
-pip install -r requirements.txt
-streamlit run app.py
+
+streamlit run adonde_vivir_oficial.py
+```
+'
 
 
 
