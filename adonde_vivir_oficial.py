@@ -14,7 +14,7 @@ import plotly.express as px
 ## Titulo
 
 st.set_page_config(layout="wide")
-st.title("Análisis Inmobiliario en Lima - Alquiler y Venta")
+st.title("Análisis del mercado de Alquiler y Venta en Lima")
 
 """
 Bienvenido a la plataforma interactiva de análisis inmobiliario de Lima.  
@@ -22,7 +22,7 @@ Bienvenido a la plataforma interactiva de análisis inmobiliario de Lima.
 Aquí podrás explorar **departamentos, casas y terrenos** en venta y alquiler, con datos reales y actualizados. 
 Esta es una herramienta diseñada para ayudarte a entender **cómo se mueve el mercado inmobiliario en Lima**, detectar oportunidades y tomar mejores decisiones.  
 
-Las fuentes que se usaron para recopilar esta información al 19 de agosto de 2025 fueron: 
+Las principales fuentes fueron: 
 - [Urbania](https://urbania.pe)
 - [Adondevivir](https://www.adondevivir.com)
 
@@ -30,7 +30,7 @@ La aplicación te permite:
 
 - Visualizar la distribución de propiedades en los distintos distritos.  
 - Comparar precios en **soles** (alquiler) y **dólares** (venta), con métricas como precio por m² y variación.  
-- Filtrar fácilmente por área, dormitorios, baños, estacionamientos y mantenimiento.  
+- Filtrar fácilmente por área, dormitorios, baños, estacionamientos y mantenimiento si fuera el caso. 
 - Acceder directamente al anuncio original de cada propiedad.  
 
 """
