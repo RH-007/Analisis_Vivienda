@@ -1,27 +1,50 @@
-# Analisis precio Vivienda Lima
-Analisis del precio de venta y alquiler de diferentes tipos de inmuebles en lima metropolitana
+# Análisis del mercado de Alquiler y Venta en Lima Metropolitana
+Proyecto de **análisis inmobiliario end-to-end** que estudia los precios de **alquiler y venta de inmuebles en Lima Metropolitana**, combinando **web scraping, limpieza de datos, análisis exploratorio, modelado y visualización interactiva**.
+
+El objetivo es proporcionar una herramienta útil para potenciales compradores e inquilinos, ayudándoles a tomar decisiones informadas basadas en datos reales del mercado.
 
 Proyecto profesional de scraping, análisis y visualización de los diferentes tipos de inmuebles disponibles en Lima usando:
-- Python + Selenium
-- Limpieza y análisis de datos
-- Machine Learning para predicción de precios
-- Dashboard interactivo en Streamlit
+- **Python**
+- **Selenium** (Web Scraping)
+- **Pandas / NumPy** (Limpieza y análisis de datos)
+- **Streamlit** (Dashboard interactivo)
+- **Plotly / Matplotlib** (Visualización)
 
 
-## 🚀 Características principales
-- Scraping automatizado de Urbania y Adondevivir
-- Mapa interactivo con ubicaciones reales
-- Filtros dinámicos por precio, área, distrito y más
-- Modelo ML para estimar el precio real del departamento
-- Dashboard dinámico, rápido y amigable
+## Características principales
+- Scraping automatizado de los portales **Urbania** y **Adondevivir**
+- Filtros dinámicos por:
+  - Tipo de operación (alquiler / venta)
+  - Precio
+  - Área
+  - Distrito
+  - Características del inmueble
+- Mapa interactivo con ubicaciones geográficas reales
+- Análisis comparativo por zonas y distritos
+- **Modelo ML** para estimar el precio de mercado de un departamento
+- Dashboard rápido, intuitivo y orientado a análisis
 
 
 ## 🗺️ Demo del Dashboard
-![Dashboard Demo](images/dashboard_demo.gif)
 
----
+👉 **Aplicación en producción:**  
+https://vivienda.streamlit.app/
 
-## 📦 Estructura del Proyecto
+
+
+![Análisis Descriptivo](dashboard/vivienda1.gif)
+
+![Alquiler - Venta](dashboard/vivienda2.gif)
+
+
+
+git clone https://github.com/tu_usuario/Analisis_Vivienda.git
+cd Analisis_Vivienda
+pip install -r requirements.txt
+streamlit run app.py
+
+
+
 
 
 
