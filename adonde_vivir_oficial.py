@@ -143,6 +143,14 @@ def display_details_table(df: pd.DataFrame, operation: str):
     """Muestra la tabla de detalles de propiedades para una operación específica."""
     
     df_display = df.copy()
+    
+    df_display["detalle"] = df_display["detalle"].fillna("")
+    df_display["caracteristica"] = df_display["caracteristica"].fillna("")
+
+    # Truncar texto visible
+    df_display["detalle_short"] = (
+        df_display["detalle"].str.slice(0, 35) + "..."
+    )
 
     # Configuración base común para ambas operaciones
     config = {
@@ -153,19 +161,25 @@ def display_details_table(df: pd.DataFrame, operation: str):
         "banios": st.column_config.NumberColumn("Baños", width="small", disabled=True),
         "estacionamientos": st.column_config.NumberColumn("Estac.", width="small", disabled=True),
         "caracteristica": st.column_config.TextColumn("Características", disabled=True),
-        "enlace": st.column_config.LinkColumn("Anuncio", display_text="🔗 Abrir", validate=r"^https?://.*$"),
+        "detalle": st.column_config.TextColumn("Detalle", disabled=True),
+        "enlace": st.column_config.LinkColumn("Anuncio", display_text= "Abrir", validate=r"^https?://.*$"),
     }
 
     if operation == "alquiler":
         price_col = "precio_pen"
-        cols_to_show = ["enlace", "fuente", "direccion", "precio_pen", "area", "dormitorio", "banios", "estacionamientos", "mantenimiento", "caracteristica"]
+        cols_to_show = ["enlace", "fuente", "direccion", "precio_pen", "area", "dormitorio", "banios", "estacionamientos", "mantenimiento", "caracteristica", "detalle"]
         config.update({
             "precio_pen": st.column_config.NumberColumn("Precio (S/.)", format="S/. %d", disabled=True),
             "mantenimiento": st.column_config.NumberColumn("Mant. (S/.)", format="S/. %d", disabled=True),
+            "detalle_short": st.column_config.TextColumn(
+        "Detalle",
+        help="Pasa el mouse para ver el detalle completo",
+        disabled=True
+    )
         })
     else:  # venta
         price_col = "precio_usd"
-        cols_to_show = ["enlace", "fuente", "direccion", "precio_usd", "area", "dormitorio", "banios", "estacionamientos", "caracteristica"]
+        cols_to_show = ["enlace", "fuente", "direccion", "precio_usd", "area", "dormitorio", "banios", "estacionamientos", "caracteristica", "detalle"]
         config.update({
             "precio_usd": st.column_config.NumberColumn("Precio ($)", format="$ %d", disabled=True),
         })
@@ -338,8 +352,9 @@ with tab2:
         )
     with c2:
         st.markdown("**Inmueble**")
+        inmueble_alquiler_ = ["departamentos"]
         input_inmueble = st.selectbox(
-            "Inmueble", inmueble, key="alquiler_inmueble" ,
+            "Inmueble", inmueble_alquiler_, key="alquiler_inmueble" ,
             label_visibility="collapsed"
         )
     
@@ -387,7 +402,7 @@ with tab2:
         
     with d3:
         st.markdown("**Dormitorios**")       
-        labels_dorm = ["Todos", 1, 2, 3, 4, 5, 6]
+        labels_dorm = ["Todos", "1 Dormitorio", "2 Dormitorios", "3 Dormitorios", "4 Dormitorios", "5 o más Dormitorios"]
         input_dormitorio_alquiler = st.selectbox(
             "seleccione el número de dormitorios:"
             , options=labels_dorm
@@ -420,7 +435,7 @@ with tab2:
     
     # Se aplica el filtro de numero de habitaciones si no es "Todos".
     if input_dormitorio_alquiler != "Todos":
-        df_tabla_alquiler = df_tabla_alquiler[df_tabla_alquiler["dormitorio"] == input_dormitorio_alquiler]
+        df_tabla_alquiler = df_tabla_alquiler[df_tabla_alquiler["dormitorios"] == input_dormitorio_alquiler]
         
     # Se aplica el filtro de estacionamientos si no es "Todos".
     if input_estacionamiento_alquiler != "Todos":
@@ -447,8 +462,9 @@ with tab3:
         )
     with c2:
         st.markdown("**Inmueble**")
+        inmueble_venta_ = ["departamentos", "casas"]
         input_inmueble = st.selectbox(
-            "Inmueble", inmueble, key="venta_inmueble"  ,     # <- clave única
+            "Inmueble", inmueble_venta_, key="venta_inmueble"  ,     # <- clave única
             label_visibility="collapsed"
         )
 
@@ -495,7 +511,7 @@ with tab3:
         
     with e3:
         st.markdown("**Dormitorios**")       
-        labels_dorm = ["Todos", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+        labels_dorm = ["Todos", "1 Dormitorio", "2 Dormitorios", "3 Dormitorios", "4 Dormitorios", "5 o más Dormitorios"]
         input_dormitorio_venta = st.selectbox(
             "seleccione el número de dormitorios:"
             , options=labels_dorm
@@ -528,7 +544,7 @@ with tab3:
         
     # Se aplica el filtro de numero de habitaciones si no es "Todos".
     if input_dormitorio_venta != "Todos":
-        df_tabla_venta = df_tabla_venta[df_tabla_venta["dormitorio"] == input_dormitorio_venta]
+        df_tabla_venta = df_tabla_venta[df_tabla_venta["dormitorios"] == input_dormitorio_venta]
         
     # Se aplica el filtro de estacionamientos si no es "Todos".
     if input_estacionamiento_venta != "Todos":
