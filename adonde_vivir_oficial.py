@@ -60,7 +60,6 @@ def load_data(path):
 
 
 # Cargamos los datos usando nuestra función cacheada
-# ruta = rf"C:\Users\PC\Desktop\Proyectos\Proyectos_Py\1.Analisis Vivienda\Analisis_Vivienda\data\processed\data_dondevivir_analisis.csv"
 
 # Cargamos los datos usando nuestra función cacheada
 data = load_data("./data/processed/data_dondevivir_analisis.csv")
@@ -122,19 +121,19 @@ def display_kpis(df: pd.DataFrame, operation: str, distrito: str, inmueble: str)
     
     c1, c2, c3 = st.columns(3)
     with c1: st.metric(f"🚪 Total {inmueble}", len(df_kpi))
-    with c2: st.metric("📉 Mínimo", fmt(df_kpi[price_col].min()))
-    with c3: st.metric("📈 Máximo", fmt(df_kpi[price_col].max()))
+    with c2: st.metric("Mínimo", fmt(df_kpi[price_col].min()))
+    with c3: st.metric("Máximo", fmt(df_kpi[price_col].max()))
     
     c4, c5 = st.columns(2)
     with c4: 
         st.metric(
-            label="📊 Promedio", 
+            label="Promedio", 
             value=fmt(district_avg), 
             delta=f"{delta_avg:,.0f} vs. promedio general",
         )
     with c5: 
         st.metric(
-            label="📊 Mediana", 
+            label="Mediana", 
             value=fmt(district_md), 
             delta=f"{delta_md:,.0f} vs. mediana general",
         )
