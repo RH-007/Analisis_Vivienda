@@ -12,7 +12,7 @@ import plotly.express as px
 
 st.set_page_config(layout="wide")
 ## Titulo
-ruta_img = rf"./dashboard/encabezado1.jpg"
+ruta_img = rf"dashboard/encabezado1.jpg"
 st.image(ruta_img, use_container_width=True)
 st.title("Análisis del mercado de Alquiler y Venta en Lima")
 
