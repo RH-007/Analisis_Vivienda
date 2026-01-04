@@ -60,7 +60,7 @@ def load_data(path):
 # Cargamos los datos usando nuestra función cacheada
 
 # Cargamos los datos usando nuestra función cacheada
-data = load_data("./data/processed/data_adondevivir_analisis.xlsx")
+data = load_data("./data/processed/data_adondevivir_analisis.csv", sep = "|", encoding = "utf-8")
 
 
 ## Variables
