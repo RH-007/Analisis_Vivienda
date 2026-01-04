@@ -41,13 +41,12 @@ La aplicación te permite:
 @st.cache_data # Decorador mágico de Streamlit
 def load_data(path):
     """
-    Carga los datos desde un archivo CSV.
     Gracias a @st.cache_data, esta función solo se ejecutará una vez
     y el resultado (el DataFrame) se guardará en memoria caché.
     Las siguientes veces que se necesiten los datos, se leerán directamente
     de la caché, haciendo la app mucho más rápida.
     """
-    df = pd.read_csv(path, sep="|", encoding="utf-8")
+    df = pd.read_excel(path)
     
     subset_cols = ['distrito', 'direccion']
     
@@ -61,7 +60,7 @@ def load_data(path):
 # Cargamos los datos usando nuestra función cacheada
 
 # Cargamos los datos usando nuestra función cacheada
-data = load_data("./data/processed/data_dondevivir_analisis.csv")
+data = load_data("./data/processed/data_adondevivir_analisis.xlsx")
 
 
 ## Variables

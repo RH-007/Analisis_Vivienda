@@ -9,7 +9,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
-from tqdm import tqdm  # pip install tqdm
+from tqdm import tqdm
 import datetime as dt
 import json
 
