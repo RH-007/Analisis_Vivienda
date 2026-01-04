@@ -38,7 +38,7 @@ La aplicación te permite:
 ## Lecturas de data  ##
 ## ==================##
 
-@st.cache_data # Decorador mágico de Streamlit
+@st.cache_data
 def load_data(path):
     """
     Gracias a @st.cache_data, esta función solo se ejecutará una vez
@@ -51,19 +51,19 @@ def load_data(path):
     subset_cols = ['distrito', 'direccion']
     
     # Eliminamos los duplicados basándonos en las columnas clave.
-    # `inplace=True` modifica el DataFrame directamente.
     df.drop_duplicates(subset=subset_cols, keep='first', inplace=True)
 
     return df
 
 
-# Cargamos los datos usando nuestra función cacheada
-
-# Cargamos los datos usando nuestra función cacheada
+# Cargamos los datos
 data = load_data("./data/processed/data_adondevivir_analisis.csv", sep = "|", encoding = "utf-8")
 
 
-## Variables
+## ==================##
+##    Variables      ##
+## ==================##
+
 distritos = data["distrito"].unique()
 inmueble = data["inmueble"].unique()
 operacion = data["operacion"].unique()
@@ -95,8 +95,7 @@ def display_kpis(df: pd.DataFrame, operation: str, distrito: str, inmueble: str)
     if df_kpi.empty:
         st.info("No hay datos de precios para mostrar KPIs.")
         return
-
-    # --- MEJORA: Calcular métricas globales para comparación ---
+    
     df_global = data[
         (data["inmueble"] == inmueble) &
         (data["operacion"] == operation)
@@ -107,7 +106,6 @@ def display_kpis(df: pd.DataFrame, operation: str, distrito: str, inmueble: str)
     global_avg = df_global[price_col].mean()
     global_md = df_global[price_col].median()
 
-    # --- Cálculo de métricas locales ---
     
     fmt = lambda x: f"{symbol} {x:,.0f}"
     
@@ -137,17 +135,12 @@ def display_kpis(df: pd.DataFrame, operation: str, distrito: str, inmueble: str)
         )
 
 def display_details_table(df: pd.DataFrame, operation: str):
-    """Muestra la tabla de detalles de propiedades para una operación específica."""
     
     df_display = df.copy()
     
     df_display["detalle"] = df_display["detalle"].fillna("")
     df_display["caracteristica"] = df_display["caracteristica"].fillna("")
 
-    # Truncar texto visible
-    df_display["detalle_short"] = (
-        df_display["detalle"].str.slice(0, 35) + "..."
-    )
 
     # Configuración base común para ambas operaciones
     config = {
@@ -192,7 +185,7 @@ def display_details_table(df: pd.DataFrame, operation: str):
 ##      Pestañas     ##
 ## ==================##
 
-tab1, tab2, tab3 = st.tabs(["Análisis Descriptivo por Distrito", "Alquiler", "Venta"])
+tab1, tab2, tab3 = st.tabs(["Análisis por Distrito", "Alquiler", "Venta"])
 
 
 ## ===========================##
