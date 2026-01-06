@@ -12,8 +12,8 @@ import plotly.express as px
 
 st.set_page_config(layout="wide")
 ## Titulo
-ruta_img = rf"dashboard/encabezado1.jpg"
-st.image(ruta_img, use_container_width=True)
+ruta_img = rf"dashboard/encabezado2.jpg"
+st.image(ruta_img, use_container_width=True, clamp=True)
 st.title("Análisis del mercado de Alquiler y Venta en Lima")
 
 """
@@ -22,8 +22,7 @@ Bienvenido a la plataforma interactiva de análisis inmobiliario de Lima.
 Aquí podrás explorar **departamentos, casas y terrenos** en venta y alquiler, con datos reales y actualizados. 
 Esta es una herramienta diseñada para ayudarte a entender **cómo se mueve el mercado inmobiliario en Lima**, detectar oportunidades y tomar mejores decisiones.  
 
-Las principales fuentes fueron: 
-- [Urbania](https://urbania.pe) y [Adondevivir](https://www.adondevivir.com)
+Las principales fuentes fueron: [Urbania](https://urbania.pe) y [Adondevivir](https://www.adondevivir.com)
 
 La aplicación te permite:
 
@@ -31,6 +30,8 @@ La aplicación te permite:
 - Comparar precios en **soles** (alquiler) y **dólares** (venta), con métricas como precio por m² y variación entre distritos (visualizaciones interactivas incluidas). 
 - Filtrar fácilmente por área, dormitorios, baños, estacionamientos y mantenimiento si fuera el caso. 
 - Acceder directamente al anuncio original de cada propiedad.  
+
+La información presentada esta actulizada al 5 de enero 2026.
 
 """
 
@@ -78,17 +79,17 @@ estacionamientos = data["tiene_estacionamientos"].unique()
 ##    Funciones      ##
 ## ==================##
 
-def display_kpis(df: pd.DataFrame, operation: str, distrito: str, inmueble: str):
+def display_kpis(df: pd.DataFrame, operation: str, inmueble: str, distrito: str,):
     """Calcula y muestra los KPIs de precios para una operación específica."""
     
     if operation == "alquiler":
         price_col = "precio_pen"
         symbol = "S/"
-        title = f"KPIs de precios en Alquiler ({symbol}) en {distrito}"
+        title = f"KPIs de precios de {inmueble} en Alquiler en ({symbol}) en {distrito}"
     else:  # venta
         price_col = "precio_usd"
         symbol = "$"
-        title = f"KPIs de precios en Venta ({symbol}) en {distrito}"
+        title = f"KPIs de precios en {inmueble} en Venta ({symbol}) en {distrito}"
 
     df_kpi = df.copy()
     df_kpi[price_col] = pd.to_numeric(df_kpi[price_col], errors="coerce")
@@ -288,25 +289,87 @@ with tab1:
                     labels={"distrito": "Distrito", col_precio: f"Precio ({simbolo})"})
         fig1.update_layout(showlegend=False)
         st.plotly_chart(fig1, use_container_width=True)
-
+        
         # --- Columnas para los siguientes gráficos ---
         g1, g2 = st.columns(2)
 
         with g1:
             # Gráfico 2: Número de Propiedades por Distrito (Bar Chart)
             st.markdown("##### Cantidad de Propiedades por Distrito")
-            prop_por_distrito = df_filtrado['distrito'].value_counts().sort_values(ascending=True) 
-            prop_por_distrito_df = pd.DataFrame(prop_por_distrito)
-            st.bar_chart(prop_por_distrito_df, horizontal=True)
+            prop_por_distrito = (df_filtrado["distrito"]
+                                .value_counts()
+                                .rename("count")
+                                .reset_index()
+                                .rename(columns={"index": "distrito"})
+                                )
+            prop_por_distrito_df = pd.DataFrame(prop_por_distrito).sort_values(by="count", ascending=False)
+            
+            fig_bar1 = px.bar(
+                            prop_por_distrito_df, 
+                            x="count", 
+                            y="distrito",
+                            orientation="h",
+                            color="count",
+                            color_continuous_scale="Blues",
+                            labels={"distrito": "Distrito ", "count": "Cantidad "},
+                            text="count"
+                            # title="Cantidad de Propiedades por Distrito"
+                            )
+            
+            fig_bar1.update_layout(
+                            xaxis_title="Recuento",
+                            yaxis_title="Distrito",
+                            yaxis=dict(
+                                # categoryorder="array",
+                                categoryarray = prop_por_distrito_df.sort_values("count")["distrito"]
+                                )
+                            )
+            
+            fig_bar1.update_coloraxes(showscale=False)
+            st.plotly_chart(fig_bar1, use_container_width=True)
+            # st.bar_chart(prop_por_distrito_df, horizontal=True)
 
         with g2:
             # Gráfico 3: Precio Promedio por m² por Distrito (Bar Chart)
             st.markdown(f"##### Precio Promedio por m² ({simbolo})")
-            df_plot = df_filtrado[(df_filtrado['area_promedio'] > 0) & (df_filtrado[col_precio] > 0)].copy()
+            df_plot = df_filtrado[
+                (df_filtrado["area_promedio"] > 0) & 
+                (df_filtrado[col_precio] > 0)
+                ].copy()
+            
             if not df_plot.empty:
-                df_plot['precio_m2'] = round(df_plot[col_precio] / df_plot['area_promedio'],2)
-                precio_m2_distrito = df_plot.groupby('distrito')['precio_m2'].mean().round(2).sort_values(ascending=False)
-                st.bar_chart(precio_m2_distrito, horizontal=True)
+                df_plot["precio_m2"] = (df_plot[col_precio] / df_plot["area_promedio"]).round(2)
+
+                precio_m2_distrito = (
+                    df_plot
+                    .groupby("distrito", as_index=False)["precio_m2"]
+                    .mean()
+                    .round(2)
+                    .sort_values("precio_m2", ascending=True)
+                )
+                
+                fig_bar2 = px.bar(
+                            precio_m2_distrito, 
+                            x="precio_m2", 
+                            y="distrito",
+                            orientation="h",
+                            color="precio_m2",
+                            color_continuous_scale="Blues",
+                            labels={"distrito": "Distrito",
+                                    "precio_m2": f"Precio promedio por m²"},
+                            text = "precio_m2"
+                            )
+                
+                fig_bar2.update_layout(
+                            xaxis_title="Precio por m²",
+                            yaxis_title="Distrito",
+                            )
+                    
+                
+                # st.bar_chart(precio_m2_distrito, horizontal=True)
+                fig_bar2.update_coloraxes(showscale=False)
+                st.plotly_chart(fig_bar2, use_container_width=True)
+            
             else:
                 st.info("No hay datos de área o precio para calcular el precio por m².")
 
@@ -329,13 +392,13 @@ with tab1:
             st.plotly_chart(fig4, use_container_width=True)
     
 ## =================================##
-## PESTAÑA de ALquiler por Distrito ##
+## PESTAÑA de Alquiler por Distrito ##
 ## =================================##
 
 with tab2:
     
     st.subheader("Propiedades en Alquiler", divider="blue")
-    st.write("Seleccione el Distrito de interes y el tipo de inmueble que desea ver")
+    st.write("Seleccione el Distrito de interes y el tipo de inmueble que desea ver en Alquiler")
     
     c1, c2 = st.columns([2, 2], gap="small")
     with c1:
