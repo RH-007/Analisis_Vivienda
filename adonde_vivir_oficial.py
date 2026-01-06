@@ -85,11 +85,11 @@ def display_kpis(df: pd.DataFrame, operation: str, inmueble: str, distrito: str,
     if operation == "alquiler":
         price_col = "precio_pen"
         symbol = "S/"
-        title = f"KPIs de precios de {inmueble} en Alquiler en ({symbol}) en {distrito}"
+        title = f"KPIs de precios de {distrito} en Alquiler en ({symbol}) en {inmueble}"
     else:  # venta
         price_col = "precio_usd"
         symbol = "$"
-        title = f"KPIs de precios en {inmueble} en Venta ({symbol}) en {distrito}"
+        title = f"KPIs de precios en {distrito} en Venta ({symbol}) en {inmueble}"
 
     df_kpi = df.copy()
     df_kpi[price_col] = pd.to_numeric(df_kpi[price_col], errors="coerce")
