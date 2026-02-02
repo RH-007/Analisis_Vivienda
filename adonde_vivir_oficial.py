@@ -31,7 +31,7 @@ La aplicación te permite:
 - Filtrar fácilmente por área, dormitorios, baños, estacionamientos y mantenimiento si fuera el caso. 
 - Acceder directamente al anuncio original de cada propiedad.  
 
-La información presentada esta actulizada al 5 de enero 2026.
+La información presentada esta actulizada al 01 de febrero 2026.
 
 """
 
