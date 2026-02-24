@@ -16,8 +16,6 @@ warnings.filterwarnings("ignore")
 DATA_DIR = Path(rf"C:\Users\PC\Desktop\Proyectos\Proyectos_Py\1.Analisis Vivienda\Analisis_Vivienda\data\raw")
 DATA_OUT = Path(rf"C:\Users\PC\Desktop\Proyectos\Proyectos_Py\1.Analisis Vivienda\Analisis_Vivienda\data\processed")
 
-
-
 # Lista todos los archivos .csv
 csv_files = sorted(DATA_DIR.glob("*.csv"))
 print(f"Se listan {len(csv_files)} archivos a procesar:")
