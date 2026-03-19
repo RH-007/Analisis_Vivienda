@@ -509,6 +509,7 @@ with tab2:
 with tab3:
     
     st.subheader("Propiedades en Venta", divider="blue")
+    st.write("Seleccione el Distrito de interes y el tipo de inmueble que desea ver en Venta")
     
     c1, c2 = st.columns([2, 2], gap="small")
     with c1:
