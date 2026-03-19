@@ -22,9 +22,9 @@ zonas = [
     "Lima Top",
     "Lima Moderna",
     "Lima Centro",
-    "Lima Este",
-    "Lima Norte",
-    "Lima Sur"
+    # "Lima Este",
+    # "Lima Norte",
+    # "Lima Sur"
 ]
 
 config_operacion = {
